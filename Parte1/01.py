@@ -29,8 +29,6 @@ x_otimo = np.array([
     [100]
 ])
 
-asdf = x_otimo + 10
-
 f_otimo = f(x_otimo[0,0], x_otimo[1,0])
 # ==========================================================================================================
 # DEFININDO O GRÁFICO
@@ -42,16 +40,16 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # HILL CLIMBING
 # ==========================================================================================================
-hill_climbing(ax, x_otimo, f_otimo, f)
+# hill_climbing(ax, x_otimo, f_otimo, f, -1)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
-busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls) # TODO: Verificar se algoritmo está realmente funcionando
+# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, -1) # TODO: Verificar se algoritmo está realmente funcionando
 # ==========================================================================================================
 # BUSCA ALEATÓRIA GLOBAL
 # ==========================================================================================================
-busca_aleatoria_global(ax, x_otimo, f_otimo, f, li, ls)
+# busca_aleatoria_global(ax, x_otimo, f_otimo, f, li, ls, -1)
 # ==========================================================================================================
 # TÊMPERA SIMULADA
 # ==========================================================================================================
-tempera_simulada
+tempera_simulada(ax, x_otimo, f_otimo, f, 100, li, ls, -1)

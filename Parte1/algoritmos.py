@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 def hill_climbing(
     ax, 
     x_otimo, f_otimo, f, 
+    minimizacao_ou_maximizacao: bool = 1,
     epslon=5, nMaxIteracoes=100, nMaxVizinhos=10
 ):
     i = 0
@@ -15,14 +16,23 @@ def hill_climbing(
             x_candidato = np.random.uniform(low=x_otimo - epslon, high=x_otimo + epslon)
             F = f(x_candidato[0, 0], x_candidato[1, 0])
 
-            if F < f_otimo:
-                x_otimo = x_candidato
-                f_otimo = F
-                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
-                melhoria = True
-                break
+            
+            if minimizacao_ou_maximizacao == 1:
+                if F > f_otimo:
+                    x_otimo = x_candidato
+                    f_otimo = F
+                    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+                    melhoria = True
+                    break
+            else:
+                if F < f_otimo:
+                    x_otimo = x_candidato
+                    f_otimo = F
+                    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+                    melhoria = True
+                    break
         i += 1
-    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='1', s=90, linewidths=3, color='green')
+    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=110, linewidths=3, color='green')
     ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
     plt.tight_layout(); plt.show()
 
@@ -32,6 +42,7 @@ def busca_aleatoria_local(
     ax, 
     x_otimo, f_otimo, f,
     x_limite_superior,
+    minimizacao_ou_maximizacao: bool = 1,
     nMaxIteracoes=100, sigma=0.01
 ):
     historico_solucoes_otimas = [f_otimo]
@@ -50,11 +61,17 @@ def busca_aleatoria_local(
 
         historico_solucoes_otimas.append(f_otimo)
 
-        if f_candidato < f_otimo:
-            x_otimo = x_candidato
-            f_otimo = f_candidato
-            ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
-    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='1', s=90, linewidths=3, color='green')
+        if minimizacao_ou_maximizacao == 1:
+            if f_candidato > f_otimo:
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+        else:
+            if f_candidato < f_otimo:
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=110, linewidths=3, color='green')
     ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
     plt.tight_layout(); plt.show()
 
@@ -63,6 +80,7 @@ def busca_aleatoria_global(
     ax, 
     x_otimo, f_otimo, f,
     x_limite_inferior, x_limite_superior,
+    minimizacao_ou_maximizacao: bool = 1,
     nMaxIteracoes=100, sigma=0.01
 ):
     historico_solucoes_otimas = [f_otimo]
@@ -85,14 +103,68 @@ def busca_aleatoria_global(
 
         historico_solucoes_otimas.append(f_otimo)
 
-        if f_candidato < f_otimo:
-            x_otimo = x_candidato
-            f_otimo = f_candidato
-            ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
-    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='1', s=90, linewidths=3, color='green')
+        if minimizacao_ou_maximizacao == 1:
+            if f_candidato > f_otimo:
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+        else:
+            if f_candidato < f_otimo:
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=110, linewidths=3, color='green')
     ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
     plt.tight_layout(); plt.show()
 
 
-def tempera_simulada():
-    
+def tempera_simulada(
+    ax, 
+    x_otimo, f_otimo, f,
+    T,
+    x_limite_inferior, x_limite_superior,
+    minimizacao_ou_maximizacao: bool = 1,
+    nMaxIteracoes=100, sigma=0.01
+):
+    i = 0
+    while i < nMaxIteracoes:
+        n = np.random.uniform(low=x_limite_inferior, high=x_limite_superior)
+
+        x_candidato = x_otimo + n
+        f_candidato = f(x_candidato[0, 0], x_candidato[1, 0])
+
+        if minimizacao_ou_maximizacao == 1:
+            Pij = np.exp(-((f(x_candidato[0, 0], x_candidato[1, 0]) + f(x_otimo[0,0], x_otimo[1,0]))/T))
+        else:
+            Pij = np.exp(-((f(x_candidato[0, 0], x_candidato[1, 0]) - f(x_otimo[0,0], x_otimo[1,0]))/T))
+        
+        distribuicao = np.random.uniform(low=0, high=1)
+
+        
+        if minimizacao_ou_maximizacao == 1:
+            if (f_candidato > f_otimo):
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+            elif (Pij <= distribuicao):
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+        else:
+            if (f_candidato < f_otimo):
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+            elif (Pij >= distribuicao):
+                x_otimo = x_candidato
+                f_otimo = f_candidato
+            
+        
+        ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+        i += 1
+        
+        
+        if minimizacao_ou_maximizacao == 1:
+            T = T * 1.8
+        else:
+            T = T * 0.8
+    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=110, linewidths=3, color='green')
+    ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
+    plt.tight_layout(); plt.show()

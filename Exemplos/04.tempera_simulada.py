@@ -53,18 +53,16 @@ while i < nMaxIteracoes:
     if (f_candidato < f_otimo):
         x_otimo = x_candidato
         f_otimo = f_candidato
+        plt.pause(0.1)
     # e aceita os não ótimos por essas condições
     elif (Pij >= distribuicao):
         x_otimo = x_candidato
         f_otimo = f_candidato
-    
+        
     plt.scatter(x_otimo, f_otimo, color='orange', s=90)
-    
     i += 1
-    
     T = T * 0.8
     
-    # plt.pause(0.01)
 
 plt.scatter(x_otimo, f_otimo, color='green', s=90)
 plt.show()
