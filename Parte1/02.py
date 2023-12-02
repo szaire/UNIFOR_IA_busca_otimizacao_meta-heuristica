@@ -15,7 +15,7 @@ X1, X2 = np.meshgrid(x1, x1)
 
 Y = f(X1, X2)
 
-x1_candidato, x2_candidato = ls, ls # TODO: ou 4, -2?
+x1_candidato, x2_candidato = ls, ls 
 f_candidato = f(x1_candidato, x2_candidato)
 
 fig = plt.figure()

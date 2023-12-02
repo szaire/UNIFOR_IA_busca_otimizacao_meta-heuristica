@@ -14,14 +14,15 @@ plt.xlim(-1.1, 2.1)
 
 x_limite_inferior = -1
 x_limite_superior = 2
-sigma = 0.001 # Encontrar o menor sigma que ache o ótimo
 # O resultado é a moda das soluções
 # Para 100 rodadas, cada iteração contará o ponto registrado e calculará a moda final
 
 x_otimo = np.random.uniform(low=x_limite_inferior, high=x_limite_superior)
 f_otimo = f(x_otimo)
 maximo_iteracoes = 1000
+
 historico_solucoes_otimas = [f_otimo]
+sigma = 0.001 # Encontrar o menor sigma que ache o ótimo
 
 plt.scatter(x_otimo, f_otimo, marker='1', color='blue', s=90, linewidth=3)
 for i in range(maximo_iteracoes):
@@ -35,15 +36,15 @@ for i in range(maximo_iteracoes):
   # Verificando se o candidato feriu os limites
   if (x_candidato > x_limite_superior):
     x_candidato = x_limite_superior
-  if (x_candidato > x_limite_superior):
-    x_candidato = x_limite_superior
+#   if (x_candidato > x_limite_superior):
+#     x_candidato = x_limite_superior
 
   f_candidato = f(x_candidato)
   #plt.scatter(x_candidato, -1, color='red')
 
   historico_solucoes_otimas.append(f_otimo)
 
-  if (f_candidato > f_otimo):
+  if (f_candidato < f_otimo):
     x_otimo = x_candidato
     f_otimo = f_candidato
     plt.scatter(x_otimo, f_otimo, color='k')
