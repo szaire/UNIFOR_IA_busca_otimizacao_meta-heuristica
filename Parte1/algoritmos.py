@@ -133,10 +133,10 @@ def tempera_simulada(
         x_candidato = x_otimo + n
         f_candidato = f(x_candidato[0, 0], x_candidato[1, 0])
 
-        if minimizacao_ou_maximizacao == 1:
-            Pij = np.exp(-((f(x_candidato[0, 0], x_candidato[1, 0]) + f(x_otimo[0,0], x_otimo[1,0]))/T))
-        else:
-            Pij = np.exp(-((f(x_candidato[0, 0], x_candidato[1, 0]) - f(x_otimo[0,0], x_otimo[1,0]))/T))
+        # if minimizacao_ou_maximizacao == 1:
+        #     Pij = np.exp(-((f(x_candidato[0, 0], x_candidato[1, 0]) + f(x_otimo[0,0], x_otimo[1,0]))/T))
+        # else:
+        Pij = np.exp(-((f(x_candidato[0, 0], x_candidato[1, 0]) - f(x_otimo[0,0], x_otimo[1,0]))/T))
         
         distribuicao = np.random.uniform(low=0, high=1)
 

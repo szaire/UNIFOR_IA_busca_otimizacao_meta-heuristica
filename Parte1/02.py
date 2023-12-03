@@ -20,7 +20,6 @@ li = -2
 num = 1000
 
 x1 = np.linspace(li, ls, num)
-
 X1, X2 = np.meshgrid(x1, x1)
 
 Y = f(X1, X2)
@@ -45,7 +44,7 @@ hill_climbing(ax, x_otimo, f_otimo, f, epslon=0.5)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
-# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls) # TODO: Verificar se algoritmo está realmente funcionando
+# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA GLOBAL
 # ==========================================================================================================

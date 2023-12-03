@@ -11,17 +11,20 @@ from algoritmos import tempera_simulada
 # FUNÇÃO OBJETIVO
 # ==========================================================================================================
 def f(x1, x2):
-    return -np.sin(x1)*np.sin(x1**2/np.pi)**20 - np.sin(x2) * np.sin(2*x2**2/np.pi)**20
+    return -(x2 + 47) * np.sin(np.sqrt(np.abs((x1/2) + (x2+47)))) - x1 * np.sin(np.sqrt(np.abs(x1 - (x2+47))))
 # ==========================================================================================================
 # DEFININDO OS PARÂMETROS
 # ==========================================================================================================
-ls = np.pi
-li = 0
+ls_x1 = 20
+li_x1 = -200
+
+ls_x2 = 20
+li_x2 = -200
 
 num = 1000
 
-x1 = np.linspace(li, ls, num)
-x2 = np.linspace(li, ls, num)
+x1 = np.linspace(li_x1, ls_x1, num)
+x2 = np.linspace(li_x2, ls_x2, num)
 
 X1, X2 = np.meshgrid(x1, x2)
 

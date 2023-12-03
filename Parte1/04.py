@@ -1,9 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from algoritmos import hill_climbing
+from algoritmos import busca_aleatoria_local
+from algoritmos import busca_aleatoria_global
+from algoritmos import tempera_simulada
+
+# APLICAR FUNÇÕES
+# ==========================================================================================================
+# FUNÇÃO OBJETIVO
+# ==========================================================================================================
 def f(x1, x2):
     return (x1**2 - 10 * np.cos(2 * np.pi * x1) + 10) + (x2**2 - 10 * np.cos(2 * np.pi * x2) + 10)
-
+# ==========================================================================================================
+# DEFININDO OS PARÂMETROS
+# ==========================================================================================================
 li, ls = -5.12, 5.12
 num = 1000
 
@@ -12,17 +23,32 @@ X1, X2 = np.meshgrid(x1, x1)
 
 Y = f(X1, X2)
 
-x1_candidato, x2_candidato = [5.12, -5.12]
-f_candidato = f(x1_candidato, x2_candidato)
+x_otimo = np.array([
+    [5],
+    [2]
+])
 
+f_otimo = f(x_otimo[0, 0], x_otimo[1, 0])
+# ==========================================================================================================
+# DEFININDO O GRÁFICO
+# ==========================================================================================================
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 ax.plot_surface(X1, X2, Y, rstride=10, cstride=10, alpha=0.6, cmap='jet')
-ax.scatter(x1_candidato, x2_candidato, f_candidato, marker='x', s=90, linewidths=3, color='red')
-
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_zlabel('z')
-ax.set_title('f(x1,x2)')
-plt.tight_layout()
-plt.show()
+ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, color='red')
+# ==========================================================================================================
+# HILL CLIMBING
+# ==========================================================================================================
+# hill_climbing(ax, x_otimo, f_otimo, f, -1, epslon=1.5)
+# ==========================================================================================================
+# BUSCA ALEATÓRIA LOCAL
+# ==========================================================================================================
+# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, -1, sigma=0.01)
+# ==========================================================================================================
+# BUSCA ALEATÓRIA GLOBAL
+# ==========================================================================================================
+# busca_aleatoria_global(ax, x_otimo, f_otimo, f, li, ls, -1, sigma=0.1) # TODO: A função não está alcançando o mínimo local!
+# ==========================================================================================================
+# TÊMPERA SIMULADA
+# ==========================================================================================================
+tempera_simulada(ax, x_otimo, f_otimo, f, 100, li, ls, -1, sigma=1)
