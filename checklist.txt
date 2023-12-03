@@ -1,0 +1,9 @@
+Parte 1:
+- Revisar os valores das funções 06, 07 e 08;
+- Documentar.
+
+Parte 2:
+- Ler e marcar o que é mais importante, identificar os objetivos;
+- Adaptar o código de Algoritmo Genético para o contexto da parte 2;
+- Cumprir os objetivos de 01 a 05 para ambas as subpartes;
+- Documentar.
