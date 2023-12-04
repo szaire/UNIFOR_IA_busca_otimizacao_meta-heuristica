@@ -39,16 +39,16 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # HILL CLIMBING
 # ==========================================================================================================
-# hill_climbing(ax, x_otimo, f_otimo, f, -1, epslon=1.5)
+# hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, epslon=1.5)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
-# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, -1, sigma=0.01)
+# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=0.01)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA GLOBAL
 # ==========================================================================================================
-# busca_aleatoria_global(ax, x_otimo, f_otimo, f, li, ls, -1, sigma=0.1) # TODO: A função não está alcançando o mínimo local!
+# busca_aleatoria_global(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=0.1) # TODO: A função não está alcançando o mínimo local!
 # ==========================================================================================================
 # TÊMPERA SIMULADA
 # ==========================================================================================================
-tempera_simulada(ax, x_otimo, f_otimo, f, 100, li, ls, -1, sigma=1)
+tempera_simulada(ax, x_otimo, f_otimo, f, 100, ls, li, ls, li, -1, sigma=1)

@@ -15,8 +15,12 @@ def f(x1, x2):
 # ==========================================================================================================
 # DEFININDO OS PARÂMETROS
 # ==========================================================================================================
-ls = 3
-li = -2
+x_ls = 2
+x_li = -2
+
+y_ls = 3
+y_li = -1
+
 num = 1000
 
 x1 = np.linspace(-2, 2, num)
@@ -42,16 +46,16 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # HILL CLIMBING
 # ==========================================================================================================
-# hill_climbing(ax, x_otimo, f_otimo, f, -1, epslon=0.1)
+# hill_climbing(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, -1, epslon=0.1)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
-# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, -1, sigma=0.01) # TODO: Verificar se algoritmo está realmente funcionando
+# busca_aleatoria_local(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, -1, sigma=0.01) # TODO: Verificar se algoritmo está realmente funcionando
 # ==========================================================================================================
 # BUSCA ALEATÓRIA GLOBAL
 # ==========================================================================================================
-# busca_aleatoria_global(ax, x_otimo, f_otimo, f, li, ls, -1, sigma=0.01)
+# busca_aleatoria_global(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, -1, sigma=0.01)
 # ==========================================================================================================
 # TÊMPERA SIMULADA
 # ==========================================================================================================
-tempera_simulada(ax, x_otimo, f_otimo, f, 5, li, ls, -1, sigma=0.01) # TODO: Não consigo procurar o menor ponto
+tempera_simulada(ax, x_otimo, f_otimo, f, 10, x_ls, x_li, y_ls, y_li, -1, nMaxIteracoes=100, sigma=0.01) # TODO: Não consigo procurar o menor ponto
