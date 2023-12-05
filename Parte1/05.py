@@ -5,6 +5,7 @@ from algoritmos import hill_climbing
 from algoritmos import busca_aleatoria_local
 from algoritmos import busca_aleatoria_global
 from algoritmos import tempera_simulada
+from algoritmos import print_3d_graph
 
 # APLICAR FUNÇÕES
 # ==========================================================================================================
@@ -46,7 +47,7 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # HILL CLIMBING
 # ==========================================================================================================
-# hill_climbing(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, -1, epslon=0.1)
+hill_climbing(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, -1, epslon=0.1)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
@@ -58,4 +59,6 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # TÊMPERA SIMULADA
 # ==========================================================================================================
-tempera_simulada(ax, x_otimo, f_otimo, f, 10, x_ls, x_li, y_ls, y_li, -1, nMaxIteracoes=100, sigma=0.01) # TODO: Não consigo procurar o menor ponto
+#tempera_simulada(ax, x_otimo, f_otimo, f, 10, x_ls, x_li, y_ls, y_li, -1, nMaxIteracoes=100, sigma=0.01) # TODO: Não consigo procurar o menor ponto
+
+print_3d_graph(ax)

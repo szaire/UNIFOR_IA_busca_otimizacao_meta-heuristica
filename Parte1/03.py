@@ -5,6 +5,7 @@ from algoritmos import hill_climbing
 from algoritmos import busca_aleatoria_local
 from algoritmos import busca_aleatoria_global
 from algoritmos import tempera_simulada
+from algoritmos import print_3d_graph
 
 # APLICAR FUNÇÕES
 # ==========================================================================================================
@@ -40,18 +41,20 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # HILL CLIMBING
 # ==========================================================================================================
-# hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, epslon=0.001)
+#hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, epslon=3, nMaxVizinhos=200)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
-# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=0.01)
+#busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=0.01)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA GLOBAL
 # ==========================================================================================================
-# busca_aleatoria_global(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=0.01) # TODO: A função não está alcançando o mínimo local!
+#busca_aleatoria_global(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=3.5) # TODO: A função não está alcançando o mínimo local!
 # ==========================================================================================================
 # TÊMPERA SIMULADA
 # ==========================================================================================================
 tempera_simulada(ax, x_otimo, f_otimo, f, 50, ls, li, ls, li, -1) # TODO: Não está funcionando corretamente
 # Nota: Se a posição inicial for muito nas extremidades da função a chance de não finalizar o algoritmo é grande
 # Solução dos problemas: Não iniciar o ponto de partida nas extremidades de x1 e x2
+
+print_3d_graph(ax)

@@ -7,6 +7,7 @@ from algoritmos import hill_climbing
 from algoritmos import busca_aleatoria_local
 from algoritmos import busca_aleatoria_global
 from algoritmos import tempera_simulada
+from algoritmos import print_3d_graph
 
 # APLICAR FUNÇÕES
 # ==========================================================================================================
@@ -42,11 +43,15 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # HILL CLIMBING
 # ==========================================================================================================
-hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1)
+#VETOR_hill_climbing = []
+#for i in range(100):
+#    VETOR_hill_climbing.append(hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1))
+#print(VETOR_hill_climbing)
+#hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
-# busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=10)
+#busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=10)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA GLOBAL
 # ==========================================================================================================
@@ -54,4 +59,6 @@ hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1)
 # ==========================================================================================================
 # TÊMPERA SIMULADA
 # ==========================================================================================================
-# tempera_simulada(ax, x_otimo, f_otimo, f, 100, ls, li, ls, li, -1)
+tempera_simulada(ax, x_otimo, f_otimo, f, 10, ls, li, ls, li, -1)
+
+# print_3d_graph(ax)

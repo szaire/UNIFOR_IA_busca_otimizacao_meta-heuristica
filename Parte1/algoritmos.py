@@ -46,6 +46,8 @@ def hill_climbing(
     ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
     ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
     plt.tight_layout(); plt.show()
+    
+    return x_otimo
 
 
 # TODO: Tem algum problema aqui, veririficar com Cirilo
@@ -202,5 +204,9 @@ def tempera_simulada(
         else:
             T = T * 0.8
     ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
+    ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
+    plt.tight_layout(); plt.show()
+
+def print_3d_graph(ax):
     ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
     plt.tight_layout(); plt.show()

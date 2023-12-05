@@ -5,6 +5,7 @@ from algoritmos import hill_climbing
 from algoritmos import busca_aleatoria_local
 from algoritmos import busca_aleatoria_global
 from algoritmos import tempera_simulada
+from algoritmos import print_3d_graph
 
 # APLICAR FUNÇÕES
 # ==========================================================================================================
@@ -57,5 +58,4 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # tempera_simulada(ax, x_otimo, f_otimo, f, 5, ls, li, ls, li, sigma=0.01) # TODO: Não consigo procurar o menor ponto
 
-#ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
-#plt.tight_layout(); plt.show()
+print_3d_graph(ax)

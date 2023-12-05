@@ -5,6 +5,7 @@ from algoritmos import hill_climbing
 from algoritmos import busca_aleatoria_local
 from algoritmos import busca_aleatoria_global
 from algoritmos import tempera_simulada
+from algoritmos import print_3d_graph
 
 # APLICAR FUNÇÕES
 # ==========================================================================================================
@@ -23,8 +24,9 @@ y_li = -2
 
 num = 1000
 
-x1 = np.linspace(li, ls, num)
-X1, X2 = np.meshgrid(x1, x1)
+x1 = np.linspace(x_li, x_ls, num)
+x2= np.linspace(y_li, y_ls, num)
+X1, X2 = np.meshgrid(x1, x2)
 
 Y = f(X1, X2)
 
@@ -44,16 +46,18 @@ ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, colo
 # ==========================================================================================================
 # HILL CLIMBING
 # ==========================================================================================================
-hill_climbing(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, epslon=0.5, nMaxVizinhos=200)
+#hill_climbing(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, epslon=5, nMaxVizinhos=200)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA LOCAL
 # ==========================================================================================================
-# busca_aleatoria_local(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li)
+# busca_aleatoria_local(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, sigma=0.1)
 # ==========================================================================================================
 # BUSCA ALEATÓRIA GLOBAL
 # ==========================================================================================================
-# busca_aleatoria_global(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li)
+# busca_aleatoria_global(ax, x_otimo, f_otimo, f, x_ls, x_li, y_ls, y_li, sigma=1)
 # ==========================================================================================================
 # TÊMPERA SIMULADA
 # ==========================================================================================================
-# tempera_simulada(ax, x_otimo, f_otimo, f, 100, x_ls, x_li, y_ls, y_li)
+tempera_simulada(ax, x_otimo, f_otimo, f, 10, x_ls, x_li, y_ls, y_li, sigma=1)
+
+print_3d_graph(ax)
