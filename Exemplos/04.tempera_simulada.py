@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import stats
 import matplotlib.pyplot as plt
 
 # 1.1) Declaração do número máximo de iterações

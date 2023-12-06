@@ -1,4 +1,5 @@
 import numpy as np
+from scipy import stats
 import matplotlib.pyplot as plt
 
 def hill_climbing(
@@ -32,20 +33,20 @@ def hill_climbing(
                 if F > f_otimo:
                     x_otimo = x_candidato
                     f_otimo = F
-                    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+                    #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
                     melhoria = True
                     break
             else:
                 if F < f_otimo:
                     x_otimo = x_candidato
                     f_otimo = F
-                    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+                    #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
                     melhoria = True
                     break
         i += 1
-    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
-    ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
-    plt.tight_layout(); plt.show()
+    #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
+    #ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
+    #plt.tight_layout(); plt.show()
     
     return x_otimo
 
@@ -82,15 +83,17 @@ def busca_aleatoria_local(
             if F > f_otimo:
                 x_otimo = x_candidato
                 f_otimo = F
-                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+                #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
         else:
             if F < f_otimo:
                 x_otimo = x_candidato
                 f_otimo = F
-                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
-    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
-    ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
-    plt.tight_layout(); plt.show()
+                #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+    #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
+    #ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
+    #plt.tight_layout(); plt.show()
+
+    return x_otimo
 
 
 def busca_aleatoria_global(
@@ -134,15 +137,17 @@ def busca_aleatoria_global(
             if F > f_otimo:
                 x_otimo = x_candidato
                 f_otimo = F
-                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+                #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
         else:
             if F < f_otimo:
                 x_otimo = x_candidato
                 f_otimo = F
-                ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
-    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
-    ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
-    plt.tight_layout(); plt.show()
+                #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+    #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
+    #ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
+    #plt.tight_layout(); plt.show()
+    
+    return x_otimo
 
 
 def tempera_simulada(
@@ -193,19 +198,16 @@ def tempera_simulada(
             elif (Pij >= distribuicao):
                 x_otimo = x_candidato
                 f_otimo = F
-            
         
-        ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
+        #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='o', s=90, linewidths=3, color='k')
         i += 1
         
-        
-        if minimizacao_ou_maximizacao == 1:
-            T = T * 1.8
-        else:
-            T = T * 0.8
-    ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
-    ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
-    plt.tight_layout(); plt.show()
+        T = T * 0.8
+    #ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=500, linewidths=3, color='green', zorder=10)
+    #ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')
+    #plt.tight_layout(); plt.show()
+    
+    return x_otimo
 
 def print_3d_graph(ax):
     ax.set_xlabel('x'); ax.set_ylabel('y'); ax.set_zlabel('z'); ax.set_title('f(x1,x2)')

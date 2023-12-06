@@ -1,5 +1,6 @@
 # importando bibliotecas
 import numpy as np
+from scipy import stats
 import matplotlib.pyplot as plt
 
 # importando métodos
@@ -41,24 +42,24 @@ ax = fig.add_subplot(projection='3d')
 ax.plot_surface(X1, X2, Y, rstride=10, cstride=10, alpha=0.6, cmap='jet')
 ax.scatter(x_otimo[0], x_otimo[1], f_otimo, marker='x', s=90, linewidths=3, color='red')
 # ==========================================================================================================
-# HILL CLIMBING
+# RESOLUÇÃO
 # ==========================================================================================================
-#VETOR_hill_climbing = []
-#for i in range(100):
-#    VETOR_hill_climbing.append(hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1))
-#print(VETOR_hill_climbing)
-#hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1)
-# ==========================================================================================================
-# BUSCA ALEATÓRIA LOCAL
-# ==========================================================================================================
-#busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=10)
-# ==========================================================================================================
-# BUSCA ALEATÓRIA GLOBAL
-# ==========================================================================================================
-# busca_aleatoria_global(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1)
-# ==========================================================================================================
-# TÊMPERA SIMULADA
-# ==========================================================================================================
-tempera_simulada(ax, x_otimo, f_otimo, f, 10, ls, li, ls, li, -1)
+VETOR_hill_climbing = []
+VETOR_busca_aleatoria_local = []
+VETOR_busca_aleatoria_global = []
+VETOR_tempera_simulada = []
+for i in range(100):
+    VETOR_hill_climbing.append(hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1))
+    VETOR_busca_aleatoria_local.append(busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=10))
+    VETOR_busca_aleatoria_global.append(busca_aleatoria_global(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1))
+    VETOR_tempera_simulada.append(tempera_simulada(ax, x_otimo, f_otimo, f, 10, ls, li, ls, li, -1))
 
-# print_3d_graph(ax)
+MODA_hill_climbing = stats.mode(VETOR_hill_climbing)
+MODA_busca_aleatoria_local = stats.mode(VETOR_busca_aleatoria_local)
+MODA_busca_aleatoria_global = stats.mode(VETOR_busca_aleatoria_global)
+MODA_tempera_simulada = stats.mode(VETOR_tempera_simulada)
+
+print(MODA_hill_climbing)
+print(MODA_busca_aleatoria_local)
+print(MODA_busca_aleatoria_global)
+print(MODA_tempera_simulada)
