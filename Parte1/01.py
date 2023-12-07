@@ -48,7 +48,7 @@ VETOR_hill_climbing = []
 VETOR_busca_aleatoria_local = []
 VETOR_busca_aleatoria_global = []
 VETOR_tempera_simulada = []
-for i in range(100):
+for i in range(1000000):
     VETOR_hill_climbing.append(hill_climbing(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1))
     VETOR_busca_aleatoria_local.append(busca_aleatoria_local(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1, sigma=10))
     VETOR_busca_aleatoria_global.append(busca_aleatoria_global(ax, x_otimo, f_otimo, f, ls, li, ls, li, -1))
