@@ -94,10 +94,8 @@ def roleta(P):
         # --> [ind, ind, ind, ind... ind]
     return individuos_otimos
 
-# RECOMBINAÇÃO (  ) 
-def recombinacao_dois_pontos(ind_otimos: np.ndarray, prob_recombinacao):
-    ind_novos = np.array((ind_otimos.shape))
-    
+# RECOMBINAÇÃO (OK) 
+def recombinacao_dois_pontos(inds: np.ndarray, prob_recombinacao):  
     xi1 = int(np.random.uniform(low=1, high=len(P[0]) - 2))
     xi2 = int(np.random.uniform(low=1, high=len(P[0]) - 2))
     
@@ -107,12 +105,17 @@ def recombinacao_dois_pontos(ind_otimos: np.ndarray, prob_recombinacao):
     mascara = gerar_mascara(xi1, xi2)
     
     r_prob = np.random.uniform(0, 1)
-    #if (r_prob >= prob_recombinacao):
-    if (True):
-        for i, j in range(ind_novos): # ERRO
-            pass
 
-    pass
+    if (r_prob < 0): # 0 é debug
+        return 
+
+    for i in range(0, inds.shape[0]-1, 2):
+        ch = 0 # change index
+        for j in range(inds.shape[1]):
+            if mascara[j] == 1:
+                inds[i][j], inds[i+1][j] = inds[i+1][j], inds[i][j]
+
+    return inds
 
 def gerar_mascara(xi1, xi2):
     masc = np.zeros((len(P[0])))
@@ -122,12 +125,13 @@ def gerar_mascara(xi1, xi2):
     
     return masc
 
-ind_otimos = roleta(P)
-recombinacao_dois_pontos(ind_otimos, 0.85)
+
+
 # ==========================================================================================================
 # RESOLUÇÃO
 # ==========================================================================================================
-
+ind_otimos = roleta(P) # 70226352
+recombinacao_dois_pontos(ind_otimos, 0.85)
 # ======================================================================================================
 selecionados = roleta(P)
 # ==========================================================================================================
