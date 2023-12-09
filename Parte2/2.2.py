@@ -3,7 +3,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import random
+import time
 
+tempo = time.time()
 #1. Fa¸ca a defini¸c˜ao de quantos pontos devem ser gerados por regi˜ao. Escolha um valor 30 < Npontos < 60.
 
 def distance(p1,p2):    
@@ -34,7 +36,7 @@ def generate_points(N):
     return np.concatenate((x_partition,y_partition,z_partition,w_partition), axis=0)
 
 # 8 pontos por agrupamento, total de 32 pontos
-K = 3
+K = 30
 points = generate_points(K)
 I = np.random.permutation(K*4) #gera um vetor com 32 elementos aleatorios
 inicial = I[0] #escolhe um ponto aleatorio para ser o ponto de origem
@@ -61,17 +63,47 @@ for i in range(N):
 #concatena o ponto de origem no inicio e no fim de cada individuo
 vetor_origem = np.tile(np.array([[int(inicial)]]),(N,1))
 
+def calcula_aptidao(individuo_aleatorio):
+    gene_1 = individuo_aleatorio[0]
+    soma = 0
+    # calcular a distância entre todos os pontos
+    for gene_2 in individuo_aleatorio[1:]:
+        soma += distance(points[gene_1,:],points[gene_2,:])
+        gene_1 = gene_2
+    
+    # adiciona a distancia do ultimo ponto ao ponto de origem
+    soma += distance(points[gene_1,:],p_origem)
+    return soma
+
 geracao_atual = 0
 melhor_atual = Populacao[0,:]
 melhor_aptidao_atual = 20000
 posicao_melhor = 0
+elite = 2 #numero de individuos que serao mantidos na proxima geracao
 while geracao_atual < geracoes_max:
     # seleção dos pais - torneio
     # é calculada a aptidão para cada um dos dois, o que obtiver a melhor aptidão é escolhido como pai, porém, como o problema é de minimização (caminho mais curto), o que obtiver a menor aptidão é escolhido como pai
     Populacao_aux = np.empty((0,points.shape[0]), dtype=int)
-
+    
+    Populacao_elite = np.empty((0,points.shape[0]), dtype=int)
+    aptidao_auxiliar = [None] * elite 
+    for i in range(N):
+        aptidao_temporaria = calcula_aptidao(Populacao[i,:])
+        # se a aptidao auxiliar tiver algum elemento vazio, coloca o individuo na posicao vazia
+        if None in aptidao_auxiliar:
+            posicao_vazia = aptidao_auxiliar.index(None)
+            aptidao_auxiliar[posicao_vazia] = aptidao_temporaria
+            Populacao_elite = np.concatenate((Populacao_elite,Populacao[i,:].reshape(1,Populacao.shape[1])))
+        # se a aptidao auxiliar nao tiver nenhum elemento vazio, verifica se a aptidao do individuo atual é menor que a maior aptidao da aptidao auxiliar
+        elif aptidao_temporaria < max(aptidao_auxiliar):
+            # se for menor, pega a posição da maior aptidao e substitui o individuo naquela posição
+            posicao_maior = aptidao_auxiliar.index(max(aptidao_auxiliar))
+            aptidao_auxiliar[posicao_maior] = aptidao_temporaria
+            Populacao_elite[posicao_maior,:] = Populacao[i,:]
+            
+    
     # cada vez que entra no for, é feita a seleção de 2 pais, e a recombinação deles, gerando 2 filhos
-    for i in range(N//2):
+    for i in range(N//2 - (elite//2)):
         individuo_aleatorio_1 = Populacao[np.random.randint(0,N),:]
         individuo_aleatorio_2 = Populacao[np.random.randint(0,N),:]
         individuo_aleatorio_3 = Populacao[np.random.randint(0,N),:]
@@ -79,17 +111,7 @@ while geracao_atual < geracoes_max:
 
 
         # fazendo o calculo da aptidao com os 2 pares de pais para escolher o melhor par
-        def calcula_aptidao(individuo_aleatorio):
-            gene_1 = individuo_aleatorio[0]
-            soma = 0
-            # calcular a distância entre todos os pontos
-            for gene_2 in individuo_aleatorio[1:]:
-                soma += distance(points[gene_1,:],points[gene_2,:])
-                gene_1 = gene_2
-            
-            # adiciona a distancia do ultimo ponto ao ponto de origem
-            soma += distance(points[gene_1,:],p_origem)
-            return soma
+        
             
         # calcula aptidao do individuo 1 e 2 e escolhe o  que tiver menor aptidao
         aptidao_1 = calcula_aptidao(individuo_aleatorio_1)
@@ -202,15 +224,23 @@ while geracao_atual < geracoes_max:
         Populacao_aux[i, ponto_2] = aux
 
     Populacao = Populacao_aux
+    
+    # elitismo
+    # o melhor par de indivíduos da geração anterior é mantido na nova população
+    while Populacao_elite.shape[0] > 0:
+        Populacao = np.concatenate((Populacao,Populacao_elite[0,:].reshape(1,Populacao_elite.shape[1])))
+        Populacao_elite = np.delete(Populacao_elite,0,axis=0)
+    
     for i in range(N):
         individuo_atual = Populacao[i,:]
         aptidao_atual = calcula_aptidao(individuo_atual)
+        
         # se achar um melhor, substitui
         if aptidao_atual < melhor_aptidao_atual:
             melhor_aptidao_atual = aptidao_atual
             melhor_atual = individuo_atual
             posicao_melhor = geracao_atual
-            print("Melhor aptidão atual: ",melhor_aptidao_atual)
+            print("Geracao atual do melhor: ",geracao_atual)
     geracao_atual += 1
 
     # Parada quando nenhuma melhoria é observada ao longo de uma quantidade de gerações:
@@ -218,8 +248,15 @@ while geracao_atual < geracoes_max:
     #• Se não há mudança significante ao longo de uma janela de gerações, então o EA deve ser
     #parado.
     #checando se a diferença entre a geração atual e a posição do melhor é maior que 6000, ou seja, se não melhorou em 1000 gerações, não irá melhorar mais
-    if geracao_atual - posicao_melhor > 1000:
+    if geracao_atual - posicao_melhor > 6000:
         break
+
+# print time em horas, minutos e segundos
+tempo = time.time() - tempo
+print("Tempo de execução: ", tempo/3600, " horas" ,
+        (tempo%3600)/60, " minutos",
+        (tempo%3600)%60, " segundos")
+      
 
 #essa matriz pode ser utilizado para aptidao:
 #caminhos = np.concatenate((vetor_origem,Populacao,vetor_origem),axis=1)
@@ -238,9 +275,10 @@ for gene_2 in melhor_atual[1:]:
     gene_1 = gene_2
 
 # plotar a linha que liga o ponto inicial ao final
+p2 = points[melhor_atual[0],:].reshape(1,3)
+line, = ax.plot([p_origem[0,0],p2[0,0]],[p_origem[0,1],p2[0,1]],[p_origem[0,2],p2[0,2]],color='k')
 p2 = points[melhor_atual[-1],:].reshape(1,3)
 line, = ax.plot([p_origem[0,0],p2[0,0]],[p_origem[0,1],p2[0,1]],[p_origem[0,2],p2[0,2]],color='k')
-
 
 
 #exemplo caminho a partir da origem.
