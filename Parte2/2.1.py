@@ -119,37 +119,49 @@ def mutacao(inds: np.ndarray, index):
 # ==========================================================================================================
 melhor_aptidao = 0
 melhor_individuo = None
+solucoes = []
 geracao_atual = 0
 
 print(f(np.array([3, 5, 7, 2, 0, 6, 4, 1])))
 
-while melhor_aptidao != 28 and geracao_atual < nMaxGeracoes:
-    ind_otimos = roleta(P)
-    prob_rec = 0.85
-
-    pass
-
-    for i in range(0, ind_otimos.shape[0]-1, 2):
-        recombinacao_dois_pontos(ind_otimos, i, prob_rec)
-
-    pass
-
-    for i in range(ind_otimos.shape[0]):
-        mutacao(ind_otimos, i)
-
-    # guardar o melhor indivíduo da população atual:
-    for i in range(1, ind_otimos.shape[0]):
-        temp = f(ind_otimos[i])
-        if (temp > melhor_aptidao):
-            melhor_aptidao = temp
-            melhor_individuo = ind_otimos[i]
+while len(solucoes) < 92:
+    print
     
-    pass
-    # a nova população
-    P = ind_otimos
+    while melhor_aptidao != 28 and geracao_atual < nMaxGeracoes:
+        ind_otimos = roleta(P)
+        prob_rec = 0.85
 
-    geracao_atual += 1
-    #pass
+        pass
+
+        for i in range(0, ind_otimos.shape[0]-1, 2):
+            recombinacao_dois_pontos(ind_otimos, i, prob_rec)
+
+        pass
+
+        for i in range(ind_otimos.shape[0]):
+            mutacao(ind_otimos, i)
+
+        # guardar o melhor indivíduo da população atual:
+        for i in range(1, ind_otimos.shape[0]):
+            temp = f(ind_otimos[i])
+            if (temp > melhor_aptidao):
+                melhor_aptidao = temp
+                melhor_individuo = ind_otimos[i]
+        
+        pass
+        # a nova população
+        P = ind_otimos
+
+        geracao_atual += 1
+        #pass
+
+    if melhor_aptidao == 28:
+        if not melhor_individuo in solucoes:
+            solucoes.append(melhor_individuo)
+        print('😇terminou rodada com um indivíduo ótimo\ngeração atual:',geracao_atual,'\nquantidade de soluções encontradas:',len(solucoes),'\n')
+    else:
+        print('🤬terminou rodada geração atual:',geracao_atual,'\nquantidade de soluções encontradas:',len(solucoes),'\n')
+
 
 print(melhor_individuo)
 print(criar_tabuleiro(melhor_individuo))
