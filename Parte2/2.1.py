@@ -15,10 +15,7 @@ import matplotlib.pyplot as plt
 # DEFINIÇÕES INICIAIS
 # ==========================================================================================================
 # Número de pares
-h = int 
-
 n = 20
-
 # Definindo a população inicial aleatoriamente
 P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
 # Quantidade máxima de gerações
@@ -95,7 +92,9 @@ def roleta(P):
     return individuos_otimos
 
 # RECOMBINAÇÃO (OK) 
-def recombinacao_dois_pontos(inds: np.ndarray, prob_recombinacao):  
+def recombinacao_dois_pontos(inds: np.ndarray, index, prob_recombinacao):
+    #nInds = inds.copy(order='F')
+
     xi1 = int(np.random.uniform(low=1, high=len(P[0]) - 2))
     xi2 = int(np.random.uniform(low=1, high=len(P[0]) - 2))
     
@@ -106,32 +105,37 @@ def recombinacao_dois_pontos(inds: np.ndarray, prob_recombinacao):
     
     r_prob = np.random.uniform(0, 1)
 
-    if (r_prob < 0): # 0 é debug
-        return 
+    #if (r_prob < prob_recombinacao): # 0 é debug
+    #    inds = np.delete(inds, index, axis=0)
+    #    return 
 
-    for i in range(0, inds.shape[0]-1, 2):
-        ch = 0 # change index
+    #for i in range(0, inds.shape[0]-1, 2):
+    if (r_prob > prob_recombinacao):
+        i = index
         for j in range(inds.shape[1]):
             if mascara[j] == 1:
                 inds[i][j], inds[i+1][j] = inds[i+1][j], inds[i][j]
 
-    return inds
-
 def gerar_mascara(xi1, xi2):
     masc = np.zeros((len(P[0])))
-    
     for j in range(xi1, xi2+1):
         masc[j] = 1
-    
     return masc
 
-
-
+# MUTAÇÃO (  )
+def mutacao():
+    pass
 # ==========================================================================================================
 # RESOLUÇÃO
 # ==========================================================================================================
-ind_otimos = roleta(P) # 70226352
-recombinacao_dois_pontos(ind_otimos, 0.85)
+ind_otimos = roleta(P)
+
+for i in range(0, ind_otimos.shape[0]-1, 2):
+    recombinacao_dois_pontos(ind_otimos, i, 0.85)
+
+
+
+pass
 # ======================================================================================================
 selecionados = roleta(P)
 # ==========================================================================================================
