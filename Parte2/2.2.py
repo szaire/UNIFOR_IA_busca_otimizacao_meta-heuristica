@@ -62,6 +62,9 @@ for i in range(N):
 vetor_origem = np.tile(np.array([[int(inicial)]]),(N,1))
 
 geracao_atual = 0
+melhor_atual = Populacao[0,:]
+melhor_aptidao_atual = 0
+posicao_melhor = 0
 while geracao_atual < geracoes_max:
     # seleção dos pais - torneio
     # é calculada a aptidão para cada um dos dois, o que obtiver a melhor aptidão é escolhido como pai, porém, como o problema é de minimização (caminho mais curto), o que obtiver a menor aptidão é escolhido como pai
@@ -108,7 +111,6 @@ while geracao_atual < geracoes_max:
         #print("Pai 1: ",pai_1)
         #print("Pai 2: ",pai_2)
         def recombinacao_dois_pontos(pai_1, pai_2):
-            
             # se a taxa de recombinação for menor que o valor gerado , retorna os pais pois não haverá recombinação
             if random.random() > taxa_recombinacao:
                 return [pai_1, pai_2]
@@ -124,65 +126,52 @@ while geracao_atual < geracoes_max:
                 ponto_2 = aux
 
             # sem numpy:
-            #aux_2 = direita do ponto_2 do pai_2 + esquerda do ponto_1 do pai_2 + meio do pai 2
-            #aux_2 = pai_2[ponto_2:n_points] + pai_2[0:ponto_1] + pai_2[ponto_1:ponto_2]
+            # aux_2 = direita do ponto_2 do pai_2 + esquerda do ponto_1 do pai_2 + meio do pai 2
+            # aux_2 = pai_2[ponto_2:n_points] + pai_2[0:ponto_1] + pai_2[ponto_1:ponto_2]
 
-            #aux_1 = direita do ponto_2 do pai_1 + esquerda do ponto_1 do pai_1 + meio do pai 1
-            #aux_1 = pai_1[ponto_2:n_points] + pai_1[0:ponto_1] + pai_1[ponto_1:ponto_2]
+            # aux_1 = direita do ponto_2 do pai_1 + esquerda do ponto_1 do pai_1 + meio do pai 1
+            # aux_1 = pai_1[ponto_2:n_points] + pai_1[0:ponto_1] + pai_1[ponto_1:ponto_2]
 
-            #filho_1 = [None] * n_points
-            #filho_2 = [None] * n_points
-            
+            # filho_1 = [None] * n_points
+            # filho_2 = [None] * n_points
+
             # com numpy:
-            aux_2 = np.concatenate((pai_2[ponto_2:n_points],pai_2[0:ponto_1],pai_2[ponto_1:ponto_2]))
-            aux_1 = np.concatenate((pai_1[ponto_2:n_points],pai_1[0:ponto_1],pai_1[ponto_1:ponto_2]))
+            aux_2 = np.concatenate(
+                (pai_2[ponto_2:n_points], pai_2[0:ponto_1], pai_2[ponto_1:ponto_2])
+            )
+            aux_1 = np.concatenate(
+                (pai_1[ponto_2:n_points], pai_1[0:ponto_1], pai_1[ponto_1:ponto_2])
+            )
             filho_1 = [None] * n_points
             filho_2 = [None] * n_points
 
-        #coloca os meios
+            # coloca os meios
             for i in range(ponto_1, ponto_2):
-                #sem numpy:
-                #filho_1[i] = pai_2[i]
-                #filho_2[i] = pai_1[i]
-                
-                #com numpy:
                 filho_1[i] = pai_2[i]
                 filho_2[i] = pai_1[i]
-        
 
             posAux_1 = 0
             posAux_2 = 0
+
             # coloca o final
             for i in range(ponto_2, n_points):
                 while aux_1[posAux_1] in filho_1:
                     posAux_1 += 1
-                
-                #sem numpy:
-                #filho_1[i] = aux_1[posAux_1]
-                # com numpy:
                 filho_1[i] = aux_1[posAux_1]
                 while aux_2[posAux_2] in filho_2:
                     posAux_2 += 1
-                #sem numpy:
-                #filho_2[i] = aux_2[posAux_2]
-                # com numpy:
                 filho_2[i] = aux_2[posAux_2]
 
-        #coloca o inicio
+            # coloca o inicio
             for i in range(0, ponto_1):
                 while aux_1[posAux_1] in filho_1:
                     posAux_1 += 1
-                #sem numpy:
-                #filho_1[i] = aux_1[posAux_1]
-                # com numpy:
                 filho_1[i] = aux_1[posAux_1]
                 while aux_2[posAux_2] in filho_2:
                     posAux_2 += 1
-                #sem numpy:
-                #filho_2[i] = aux_2[posAux_2]
-                # com numpy:
                 filho_2[i] = aux_2[posAux_2]
-            #retorna cromossomo
+
+            # retorna cromossomo
             return [filho_1, filho_2]
 
         filhos = recombinacao_dois_pontos(pai_1, pai_2)
@@ -199,11 +188,10 @@ while geracao_atual < geracoes_max:
         if random.random() > taxa_mutacao:
             continue
 
-        # escolhendo dois pontos aleatórios para fazer a mutação
-        ponto_1 = random.randint(0, n_points)
-        ponto_2 = random.randint(0, n_points)
+        ponto_1 = random.randint(0, n_points-1)
+        ponto_2 = random.randint(0, n_points-1)
         while ponto_1 == ponto_2:
-            ponto_2 = random.randint(0, n_points)
+            ponto_2 = random.randint(0, n_points-1)
 
         # fazendo a mutação, trocando os genes de posição
         aux = Populacao_aux[i, ponto_1]
@@ -211,27 +199,50 @@ while geracao_atual < geracoes_max:
         Populacao_aux[i, ponto_2] = aux
 
     Populacao = Populacao_aux
+    for i in range(N):
+        individuo_atual = Populacao[i,:]
+        aptidao_atual = calcula_aptidao(individuo_atual)
+        # se achar um melhor, substitui
+        if aptidao_atual < melhor_aptidao_atual:
+            melhor_aptidao_atual = aptidao_atual
+            melhor_atual = individuo_atual
+            posicao_melhor = geracao_atual
     geracao_atual += 1
     print("Geração atual: ",geracao_atual)
 
-# Parada quando nenhuma melhoria é observada ao longo de uma quantidade de gerações:
-#• Esta pode ser identificada ao monitorar a aptidão do melhor indivíduo.
-#• Se não há mudança significante ao longo de uma janela de gerações, então o EA deve ser
-#parado.
+    # Parada quando nenhuma melhoria é observada ao longo de uma quantidade de gerações:
+    #• Esta pode ser identificada ao monitorar a aptidão do melhor indivíduo.
+    #• Se não há mudança significante ao longo de uma janela de gerações, então o EA deve ser
+    #parado.
+    #checando se a diferença entre a geração atual e a posição do melhor é maior que 6000, ou seja, se não melhorou em 1000 gerações, não irá melhorar mais
+    if geracao_atual - posicao_melhor > 6000:
+        break
 
 #essa matriz pode ser utilizado para aptidao:
-caminhos = np.concatenate((vetor_origem,Populacao,vetor_origem),axis=1)
+#caminhos = np.concatenate((vetor_origem,Populacao,vetor_origem),axis=1)
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 #plota os pontos e a origem 
 ax.scatter(points[:,0], points[:,1], points[:,2], c='#248DD2', marker='o')
 ax.scatter(p_origem[0:,0], p_origem[0:,1], p_origem[0:,2], c='green', marker='x',linewidth=3,s=30)
 
+# plotar todas as linhas do melhor
+gene_1 = melhor_atual[0]
+for gene_2 in melhor_atual[1:]:
+    p1 = points[gene_1,:].reshape(1,3)
+    p2 = points[gene_2,:].reshape(1,3)
+    line, = ax.plot([p1[0,0],p2[0,0]],[p1[0,1],p2[0,1]],[p1[0,2],p2[0,2]],color='k')
+    gene_1 = gene_2
+
+# plotar a linha que liga a origem ao ponto final
+p2 = points[melhor_atual[-1],:].reshape(1,3)
+line, = ax.plot([p_origem[0,0],p2[0,0]],[p_origem[0,1],p2[0,1]],[p_origem[0,2],p2[0,2]],color='k')
+
 
 #exemplo caminho a partir da origem.
-p2 = points[0,:].reshape(1,3)
+#p2 = points[0,:].reshape(1,3)
 #plota a linha que liga a origem ao ponto
-line, = ax.plot([p_origem[0,0],p2[0,0]],[p_origem[0,1],p2[0,1]],[p_origem[0,2],p2[0,2]],color='k')
+#line, = ax.plot([p_origem[0,0],p2[0,0]],[p_origem[0,1],p2[0,1]],[p_origem[0,2],p2[0,2]],color='k')
 
 plt.tight_layout()
 plt.show()
