@@ -18,7 +18,7 @@ n = 50
 # Definindo a população inicial aleatoriamente
 P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
 # Quantidade máxima de gerações
-nMaxGeracoes = 1000
+nMaxGeracoes = 3000
 # ==========================================================================================================
 # FUNÇÃO OBJETIVO - OBJETIVO: MAXIMIZAR F(X), OU SEJA, MINIMIZAR H
 # ==========================================================================================================
@@ -28,11 +28,11 @@ def f(x):
 
 def h(x: list):
     # criar um algoritmo para identificar os pares atacantes
-    tab = criar_tabuleiro(x)
-    quant_pares_atacantes = procurar_pares_atacantes(tab, x)
+    #tab = criar_tabuleiro(x)
+    quant_pares_atacantes = procurar_pares_atacantes(x)
     return quant_pares_atacantes
 
-def procurar_pares_atacantes(tab: np.ndarray, x: list):
+def procurar_pares_atacantes(x: list):
     pares = 0
     for i in range(8):
         for j in range(i + 1, 8):
@@ -58,14 +58,13 @@ def criar_tabuleiro(x: list):
 # ALGORITMOS
 # ==========================================================================================================
 # SELEÇÃO (OK) 
-def roleta(P):
+def roleta(P: np.ndarray):
     somatorio_den_pi = 0
     for ind in P:
         somatorio_den_pi += f(ind)
-    individuos_otimos = np.empty((0,P.shape[1]))
+    individuos_otimos = np.empty((0,P.shape[1])).astype(int)
     for _ in range(len(P)):
         i = 0
-        # r ~ U(0, 1)
         r = np.random.uniform(0, 1)
         s = f(P[i,:])/somatorio_den_pi
         while s < r:
@@ -112,16 +111,16 @@ def mutacao(inds: np.ndarray, index):
 # RESOLUÇÃO
 # ==========================================================================================================
 melhor_aptidao = 0
-melhor_individuo = None
-solucoes = np.array([])
+melhor_individuo = np.array([])
+solucoes = []
+quantidade_solucoes = 0
 geracao_atual = 0
 
-#print(f(np.array([3, 5, 7, 2, 0, 6, 4, 1])))
-
-while len(solucoes) < 92:
+while quantidade_solucoes < 92:
     melhor_aptidao = 0
     geracao_atual = 0
     P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
+
     
     while melhor_aptidao < 28 and geracao_atual < nMaxGeracoes:
         ind_otimos = roleta(P)
@@ -130,8 +129,12 @@ while len(solucoes) < 92:
         for i in range(0, ind_otimos.shape[0]-1, 2):
             recombinacao_dois_pontos(ind_otimos, i, prob_rec)
 
+        pass
+        
         for i in range(ind_otimos.shape[0]):
             mutacao(ind_otimos, i)
+
+        pass
 
         # guardar o melhor indivíduo da população atual:
         for i in range(0, ind_otimos.shape[0]):
@@ -140,26 +143,26 @@ while len(solucoes) < 92:
                 melhor_aptidao = temp
                 melhor_individuo = ind_otimos[i]
         
+        pass
+        
         # a nova população
-        P = ind_otimos
-
+        P = ind_otimos.copy(order='F')
+        
         geracao_atual += 1
         #pass
-        if geracao_atual % 100 == 0:
+        if geracao_atual % 10 == 0:
             print(f'melhor aptidão {melhor_aptidao} da geração {geracao_atual}')
    
     if melhor_aptidao == 28:
-        if(len(solucoes) == 0):
-            np.concatenate((solucoes, melhor_individuo))
+        if (len(solucoes) == 0):
+            solucoes.append(melhor_individuo)
+            quantidade_solucoes += 1
         for ind in solucoes:
-            if not np.array_equal(ind, melhor_individuo):
-                np.concatenate((solucoes, melhor_individuo))
-    print('quantidade de solucoes:',len(solucoes))
-
-
-print(melhor_individuo)
-print(criar_tabuleiro(melhor_individuo))
-print(melhor_aptidao)
+            if not ind is melhor_individuo:
+                solucoes.append(melhor_individuo)
+                quantidade_solucoes += 1
+                break
+    print('length:',len(solucoes),'//array:',solucoes)
 
 # ==========================================================================================================
 # MUTAÇÃO 
