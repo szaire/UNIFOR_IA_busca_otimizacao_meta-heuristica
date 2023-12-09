@@ -14,11 +14,11 @@ import matplotlib.pyplot as plt
 # DEFINIÇÕES INICIAIS
 # ==========================================================================================================
 # Número de pares
-n = 100
+n = 50
 # Definindo a população inicial aleatoriamente
 P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
 # Quantidade máxima de gerações
-nMaxGeracoes = 10000
+nMaxGeracoes = 1000
 # ==========================================================================================================
 # FUNÇÃO OBJETIVO - OBJETIVO: MAXIMIZAR F(X), OU SEJA, MINIMIZAR H
 # ==========================================================================================================
@@ -62,7 +62,6 @@ def roleta(P):
     somatorio_den_pi = 0
     for ind in P:
         somatorio_den_pi += f(ind)
-    
     individuos_otimos = np.empty((0,P.shape[1]))
     for _ in range(len(P)):
         i = 0
@@ -114,13 +113,12 @@ def mutacao(inds: np.ndarray, index):
 # ==========================================================================================================
 melhor_aptidao = 0
 melhor_individuo = None
-solucoes = []
+solucoes = np.array([])
 geracao_atual = 0
 
 #print(f(np.array([3, 5, 7, 2, 0, 6, 4, 1])))
 
 while len(solucoes) < 92:
-    melhor_individuo = None
     melhor_aptidao = 0
     geracao_atual = 0
     P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
@@ -149,14 +147,14 @@ while len(solucoes) < 92:
         #pass
         if geracao_atual % 100 == 0:
             print(f'melhor aptidão {melhor_aptidao} da geração {geracao_atual}')
-
+   
     if melhor_aptidao == 28:
+        if(len(solucoes) == 0):
+            np.concatenate((solucoes, melhor_individuo))
         for ind in solucoes:
             if not np.array_equal(ind, melhor_individuo):
-                solucoes.append(melhor_individuo)
-        print('😇terminou rodada com um indivíduo ótimo\ngeração atual:',geracao_atual,'\nquantidade de soluções encontradas:',len(solucoes),'\n')
-    else:
-        print('🤬terminou rodada geração atual:',geracao_atual,'\nquantidade de soluções encontradas:',len(solucoes),'\n')
+                np.concatenate((solucoes, melhor_individuo))
+    print('quantidade de solucoes:',len(solucoes))
 
 
 print(melhor_individuo)
