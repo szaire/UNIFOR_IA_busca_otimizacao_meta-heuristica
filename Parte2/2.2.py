@@ -42,6 +42,9 @@ p_origem = points[inicial,:].reshape(1,3)
 points = np.delete(points,inicial,axis=0) #remove o ponto de origem da lista de pontos pois ele nao pode ser visitado novamente
 taxa_recombinacao = .95
 n_points = K*4-1 #numero de pontos que podem ser visitados
+taxa_mutacao = .01
+geracoes_max = 100000
+
 
 
 #2. Fa¸ca a defini¸c˜ao da quantidade N de indiv´ıduos em uma popula¸c˜ao e quantidade m´axima de gera¸c˜oes
@@ -58,133 +61,163 @@ for i in range(N):
 #concatena o ponto de origem no inicio e no fim de cada individuo
 vetor_origem = np.tile(np.array([[int(inicial)]]),(N,1))
 
-# seleção dos pais - torneio
-# é calculada a aptidão para cada um dos dois, o que obtiver a melhor aptidão é escolhido como pai, porém, como o problema é de minimização (caminho mais curto), o que obtiver a menor aptidão é escolhido como pai
-Populacao_aux = np.empty((0,points.shape[0]), dtype=int)
+geracao_atual = 0
+while geracao_atual < geracoes_max:
+    # seleção dos pais - torneio
+    # é calculada a aptidão para cada um dos dois, o que obtiver a melhor aptidão é escolhido como pai, porém, como o problema é de minimização (caminho mais curto), o que obtiver a menor aptidão é escolhido como pai
+    Populacao_aux = np.empty((0,points.shape[0]), dtype=int)
 
-# cada vez que entra no for, é feita a seleção de 2 pais, e a recombinação deles, gerando 2 filhos
-for i in range(N//2):
-    individuo_aleatorio_1 = Populacao[np.random.randint(0,N),:]
-    individuo_aleatorio_2 = Populacao[np.random.randint(0,N),:]
-    individuo_aleatorio_3 = Populacao[np.random.randint(0,N),:]
-    individuo_aleatorio_4 = Populacao[np.random.randint(0,N),:]
+    # cada vez que entra no for, é feita a seleção de 2 pais, e a recombinação deles, gerando 2 filhos
+    for i in range(N//2):
+        individuo_aleatorio_1 = Populacao[np.random.randint(0,N),:]
+        individuo_aleatorio_2 = Populacao[np.random.randint(0,N),:]
+        individuo_aleatorio_3 = Populacao[np.random.randint(0,N),:]
+        individuo_aleatorio_4 = Populacao[np.random.randint(0,N),:]
 
 
-    # fazendo o calculo da aptidao com os 2 pares de pais para escolher o melhor par
-    def calcula_aptidao(individuo_aleatorio):
-        gene_1 = individuo_aleatorio[0]
-        soma = 0
-        # calcular a distância entre todos os pontos
-        for gene_2 in individuo_aleatorio[1:]:
-            soma += distance(points[gene_1,:],points[gene_2,:])
-            gene_1 = gene_2
-        return soma
+        # fazendo o calculo da aptidao com os 2 pares de pais para escolher o melhor par
+        def calcula_aptidao(individuo_aleatorio):
+            gene_1 = individuo_aleatorio[0]
+            soma = 0
+            # calcular a distância entre todos os pontos
+            for gene_2 in individuo_aleatorio[1:]:
+                soma += distance(points[gene_1,:],points[gene_2,:])
+                gene_1 = gene_2
+            return soma
+            
+        # calcula aptidao do individuo 1 e 2 e escolhe o  que tiver menor aptidao
+        aptidao_1 = calcula_aptidao(individuo_aleatorio_1)
+        aptidao_2 = calcula_aptidao(individuo_aleatorio_2)
+
+        if aptidao_1 < aptidao_2:
+            pai_1 = individuo_aleatorio_1
+        else:
+            pai_1 = individuo_aleatorio_2 
+            
+        # calcula aptidao do individuo 3 e 4 e escolhe o  que tiver menor aptidao
+        aptidao_3 = calcula_aptidao(individuo_aleatorio_3)
+        aptidao_4 = calcula_aptidao(individuo_aleatorio_4)
+
+        if aptidao_3 < aptidao_4:
+            pai_2 = individuo_aleatorio_3
+        else:
+            pai_2 = individuo_aleatorio_4
         
-    # calcula aptidao do individuo 1 e 2 e escolhe o  que tiver menor aptidao
-    aptidao_1 = calcula_aptidao(individuo_aleatorio_1)
-    aptidao_2 = calcula_aptidao(individuo_aleatorio_2)
+        # recombinação
+        # não pode haver genes iguais no filho, então, é feito um mapeamento dos genes do pai 1 para o filho, e os genes do pai 2 que não estão no filho são adicionados ao filho
+        #print("Pai 1: ",pai_1)
+        #print("Pai 2: ",pai_2)
+        def recombinacao_dois_pontos(pai_1, pai_2):
+            
+            # se a taxa de recombinação for menor que o valor gerado , retorna os pais pois não haverá recombinação
+            if random.random() > taxa_recombinacao:
+                return [pai_1, pai_2]
 
-    if aptidao_1 < aptidao_2:
-        pai_1 = individuo_aleatorio_1
-    else:
-        pai_1 = individuo_aleatorio_2 
+            ponto_1 = random.randint(1, n_points)
+            ponto_2 = random.randint(1, n_points)
+            while ponto_1 == ponto_2:
+                ponto_2 = random.randint(0, n_points)
+
+            if ponto_1 > ponto_2:
+                aux = ponto_1
+                ponto_1 = ponto_2
+                ponto_2 = aux
+
+            # sem numpy:
+            #aux_2 = direita do ponto_2 do pai_2 + esquerda do ponto_1 do pai_2 + meio do pai 2
+            #aux_2 = pai_2[ponto_2:n_points] + pai_2[0:ponto_1] + pai_2[ponto_1:ponto_2]
+
+            #aux_1 = direita do ponto_2 do pai_1 + esquerda do ponto_1 do pai_1 + meio do pai 1
+            #aux_1 = pai_1[ponto_2:n_points] + pai_1[0:ponto_1] + pai_1[ponto_1:ponto_2]
+
+            #filho_1 = [None] * n_points
+            #filho_2 = [None] * n_points
+            
+            # com numpy:
+            aux_2 = np.concatenate((pai_2[ponto_2:n_points],pai_2[0:ponto_1],pai_2[ponto_1:ponto_2]))
+            aux_1 = np.concatenate((pai_1[ponto_2:n_points],pai_1[0:ponto_1],pai_1[ponto_1:ponto_2]))
+            filho_1 = [None] * n_points
+            filho_2 = [None] * n_points
+
+        #coloca os meios
+            for i in range(ponto_1, ponto_2):
+                #sem numpy:
+                #filho_1[i] = pai_2[i]
+                #filho_2[i] = pai_1[i]
+                
+                #com numpy:
+                filho_1[i] = pai_2[i]
+                filho_2[i] = pai_1[i]
         
-    # calcula aptidao do individuo 3 e 4 e escolhe o  que tiver menor aptidao
-    aptidao_3 = calcula_aptidao(individuo_aleatorio_3)
-    aptidao_4 = calcula_aptidao(individuo_aleatorio_4)
 
-    if aptidao_3 < aptidao_4:
-        pai_2 = individuo_aleatorio_3
-    else:
-        pai_2 = individuo_aleatorio_4
-    
-    # recombinação
-    # não pode haver genes iguais no filho, então, é feito um mapeamento dos genes do pai 1 para o filho, e os genes do pai 2 que não estão no filho são adicionados ao filho
-    print("Pai 1: ",pai_1)
-    print("Pai 2: ",pai_2)
-    def recombinacao_dois_pontos(pai_1, pai_2):
-        
-        # se a taxa de recombinação for menor que o valor gerado , retorna os pais pois não haverá recombinação
-        if random.random() > taxa_recombinacao:
-            return [pai_1, pai_2]
+            posAux_1 = 0
+            posAux_2 = 0
+            # coloca o final
+            for i in range(ponto_2, n_points):
+                while aux_1[posAux_1] in filho_1:
+                    posAux_1 += 1
+                
+                #sem numpy:
+                #filho_1[i] = aux_1[posAux_1]
+                # com numpy:
+                filho_1[i] = aux_1[posAux_1]
+                while aux_2[posAux_2] in filho_2:
+                    posAux_2 += 1
+                #sem numpy:
+                #filho_2[i] = aux_2[posAux_2]
+                # com numpy:
+                filho_2[i] = aux_2[posAux_2]
 
-        ponto_1 = random.randint(1, n_points)
-        ponto_2 = random.randint(1, n_points)
+        #coloca o inicio
+            for i in range(0, ponto_1):
+                while aux_1[posAux_1] in filho_1:
+                    posAux_1 += 1
+                #sem numpy:
+                #filho_1[i] = aux_1[posAux_1]
+                # com numpy:
+                filho_1[i] = aux_1[posAux_1]
+                while aux_2[posAux_2] in filho_2:
+                    posAux_2 += 1
+                #sem numpy:
+                #filho_2[i] = aux_2[posAux_2]
+                # com numpy:
+                filho_2[i] = aux_2[posAux_2]
+            #retorna cromossomo
+            return [filho_1, filho_2]
+
+        filhos = recombinacao_dois_pontos(pai_1, pai_2)
+        #print("Filhos: ",filhos)
+
+        # vamos colocar os filhos na população nova
+        Populacao_aux = np.concatenate((Populacao_aux, np.array([filhos[0]]), np.array([filhos[1]])), axis=0)
+
+    #print("Populacao aux: ",Populacao_aux)
+
+    # para cada indivíduo da nova população, aplica-se a mutação
+    for i in range(Populacao_aux.shape[0]):
+        # se a taxa de mutação for menor que o valor gerado , retorna o individuo pois não haverá mutação
+        if random.random() > taxa_mutacao:
+            continue
+
+        # escolhendo dois pontos aleatórios para fazer a mutação
+        ponto_1 = random.randint(0, n_points)
+        ponto_2 = random.randint(0, n_points)
         while ponto_1 == ponto_2:
             ponto_2 = random.randint(0, n_points)
 
-        if ponto_1 > ponto_2:
-            aux = ponto_1
-            ponto_1 = ponto_2
-            ponto_2 = aux
+        # fazendo a mutação, trocando os genes de posição
+        aux = Populacao_aux[i, ponto_1]
+        Populacao_aux[i, ponto_1] = Populacao_aux[i, ponto_2]
+        Populacao_aux[i, ponto_2] = aux
 
-        # sem numpy:
-        #aux_2 = direita do ponto_2 do pai_2 + esquerda do ponto_1 do pai_2 + meio do pai 2
-        #aux_2 = pai_2[ponto_2:n_points] + pai_2[0:ponto_1] + pai_2[ponto_1:ponto_2]
+    Populacao = Populacao_aux
+    geracao_atual += 1
+    print("Geração atual: ",geracao_atual)
 
-        #aux_1 = direita do ponto_2 do pai_1 + esquerda do ponto_1 do pai_1 + meio do pai 1
-        #aux_1 = pai_1[ponto_2:n_points] + pai_1[0:ponto_1] + pai_1[ponto_1:ponto_2]
-
-        #filho_1 = [None] * n_points
-        #filho_2 = [None] * n_points
-        
-        # com numpy:
-        aux_2 = np.concatenate((pai_2[ponto_2:n_points],pai_2[0:ponto_1],pai_2[ponto_1:ponto_2]))
-        aux_1 = np.concatenate((pai_1[ponto_2:n_points],pai_1[0:ponto_1],pai_1[ponto_1:ponto_2]))
-        filho_1 = np.empty((1,n_points), dtype=int)
-        filho_2 = np.empty((1,n_points), dtype=int)
-
-    #coloca os meios
-        for i in range(ponto_1, ponto_2):
-            #sem numpy:
-            #filho_1[i] = pai_2[i]
-            #filho_2[i] = pai_1[i]
-            
-            #com numpy:
-            filho_1[0,i] = pai_2[i]
-            filho_2[0,i] = pai_1[i]
-    
-
-        posAux_1 = 0
-        posAux_2 = 0
-        # coloca o final
-        for i in range(ponto_2, n_points):
-            while aux_1[posAux_1] in filho_1:
-                posAux_1 += 1
-            
-            #sem numpy:
-            #filho_1[i] = aux_1[posAux_1]
-            # com numpy:
-            filho_1[0,i] = aux_1[posAux_1]
-            while aux_2[posAux_2] in filho_2:
-                posAux_2 += 1
-            #sem numpy:
-            #filho_2[i] = aux_2[posAux_2]
-            # com numpy:
-            filho_2[0,i] = aux_2[posAux_2]
-
-    #coloca o inicio
-        for i in range(0, ponto_1):
-            while aux_1[posAux_1] in filho_1:
-                posAux_1 += 1
-            #sem numpy:
-            #filho_1[i] = aux_1[posAux_1]
-            # com numpy:
-            filho_1[0,i] = aux_1[posAux_1]
-            while aux_2[posAux_2] in filho_2:
-                posAux_2 += 1
-            #sem numpy:
-            #filho_2[i] = aux_2[posAux_2]
-            # com numpy:
-            filho_2[0,i] = aux_2[posAux_2]
-        #retorna cromossomo
-        return [filho_1, filho_2]
-
-    filhos = recombinacao_dois_pontos(pai_1, pai_2)
-    print("Filhos: ",filhos)
-
-    # vamos colocar os filhos na população nova
-    Populacao_aux = np.concatenate((Populacao_aux,filhos[0],filhos[1]))
+# Parada quando nenhuma melhoria é observada ao longo de uma quantidade de gerações:
+#• Esta pode ser identificada ao monitorar a aptidão do melhor indivíduo.
+#• Se não há mudança significante ao longo de uma janela de gerações, então o EA deve ser
+#parado.
 
 #essa matriz pode ser utilizado para aptidao:
 caminhos = np.concatenate((vetor_origem,Populacao,vetor_origem),axis=1)
