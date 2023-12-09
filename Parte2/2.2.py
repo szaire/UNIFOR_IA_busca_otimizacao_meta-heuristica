@@ -63,7 +63,7 @@ vetor_origem = np.tile(np.array([[int(inicial)]]),(N,1))
 
 geracao_atual = 0
 melhor_atual = Populacao[0,:]
-melhor_aptidao_atual = 0
+melhor_aptidao_atual = 20000
 posicao_melhor = 0
 while geracao_atual < geracoes_max:
     # seleção dos pais - torneio
@@ -86,6 +86,9 @@ while geracao_atual < geracoes_max:
             for gene_2 in individuo_aleatorio[1:]:
                 soma += distance(points[gene_1,:],points[gene_2,:])
                 gene_1 = gene_2
+            
+            # adiciona a distancia do ultimo ponto ao ponto de origem
+            soma += distance(points[gene_1,:],p_origem)
             return soma
             
         # calcula aptidao do individuo 1 e 2 e escolhe o  que tiver menor aptidao
@@ -207,15 +210,15 @@ while geracao_atual < geracoes_max:
             melhor_aptidao_atual = aptidao_atual
             melhor_atual = individuo_atual
             posicao_melhor = geracao_atual
+            print("Melhor aptidão atual: ",melhor_aptidao_atual)
     geracao_atual += 1
-    print("Geração atual: ",geracao_atual)
 
     # Parada quando nenhuma melhoria é observada ao longo de uma quantidade de gerações:
     #• Esta pode ser identificada ao monitorar a aptidão do melhor indivíduo.
     #• Se não há mudança significante ao longo de uma janela de gerações, então o EA deve ser
     #parado.
     #checando se a diferença entre a geração atual e a posição do melhor é maior que 6000, ou seja, se não melhorou em 1000 gerações, não irá melhorar mais
-    if geracao_atual - posicao_melhor > 6000:
+    if geracao_atual - posicao_melhor > 1000:
         break
 
 #essa matriz pode ser utilizado para aptidao:
@@ -234,9 +237,10 @@ for gene_2 in melhor_atual[1:]:
     line, = ax.plot([p1[0,0],p2[0,0]],[p1[0,1],p2[0,1]],[p1[0,2],p2[0,2]],color='k')
     gene_1 = gene_2
 
-# plotar a linha que liga a origem ao ponto final
+# plotar a linha que liga o ponto inicial ao final
 p2 = points[melhor_atual[-1],:].reshape(1,3)
 line, = ax.plot([p_origem[0,0],p2[0,0]],[p_origem[0,1],p2[0,1]],[p_origem[0,2],p2[0,2]],color='k')
+
 
 
 #exemplo caminho a partir da origem.
