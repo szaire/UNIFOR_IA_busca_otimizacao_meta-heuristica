@@ -1,15 +1,14 @@
 # TODOs:
 # DONE: 1. Fa¸ca a defini¸c˜ao da quantidade N de indiv´ıduos em uma popula¸c˜ao e quantidade m´axima de gera¸c˜oes.
-# TODO: 2. Projete o operador de sele¸c˜ao, baseado no m´etodo da roleta.
-# TODO: 3. Na etapa de recombina¸c˜ao, escolha um entre os seguintes operadores: Recombina¸c˜ao de um ponto ou
+# DONE: 2. Projete o operador de sele¸c˜ao, baseado no m´etodo da roleta.
+# DONE: 3. Na etapa de recombina¸c˜ao, escolha um entre os seguintes operadores: Recombina¸c˜ao de um ponto ou
 # Recombina¸c˜ao de dois pontos. A probabilidade de recombina¸c˜ao nesta etapa deve ser entre 85 < pc < 95%.
-# TODO: 4. Na prole gerada, deve-se aplicar a muta¸c˜ao com probabilidade de 1% (neste caso, ´e interessante avaliar os
+# DONE: 4. Na prole gerada, deve-se aplicar a muta¸c˜ao com probabilidade de 1% (neste caso, ´e interessante avaliar os
 # diferentes procedimentos exibidos).
 # TODO: 5. O algoritmo deve parar quando atingir o m´aximo n´umero de gera¸c˜oes ou quando a fun¸c˜ao custo atingir seu valor
 # ´otimo.
 # ==========================================================================================================
 import numpy as np
-from scipy import stats
 import matplotlib.pyplot as plt
 # ==========================================================================================================
 # DEFINIÇÕES INICIAIS
@@ -19,7 +18,7 @@ n = 20
 # Definindo a população inicial aleatoriamente
 P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
 # Quantidade máxima de gerações
-nMaxGeracoes = 1000
+nMaxGeracoes = 10000
 # ==========================================================================================================
 # FUNÇÃO OBJETIVO - OBJETIVO: MAXIMIZAR F(X), OU SEJA, MINIMIZAR H
 # ==========================================================================================================
@@ -34,29 +33,16 @@ def h(x: list):
     return quant_pares_atacantes
 
 def procurar_pares_atacantes(tab: np.ndarray, x: list):
-    quant_pares_atacantes = 0
-    # percorrer horizontal
-    for i in range(len(x)):
-        soma = sum(tab[i])
-        if soma > 1:
-            quant_pares_atacantes += soma            
-    # percorrer diagonal superior
-    i = x[0]-1
-    j = 0
-    while i >= 0 and i <= 7:
-        if tab[i][j] == 1:
-            quant_pares_atacantes += 1
-        i -= 1
-        j += 1
-    # percorrer diagonal inferior
-    i = x[0]-1
-    j = 0
-    while i >= 0 and i <= 7:
-        if tab[i][j] == 1:
-            quant_pares_atacantes += 1
-        i += 1
-        j += 1
-    return quant_pares_atacantes
+    pares = 0
+    for i in range(8):
+        for j in range(i + 1, 8):
+            if x[i] == x[j]:
+                pares += 1
+            elif x[i] == x[j] - (j - i):
+                pares += 1
+            elif x[i] == x[j] + (j - i):
+                pares += 1
+    return pares
     
 def criar_tabuleiro(x: list):
     temp_tab = np.zeros((8, 8))
@@ -64,7 +50,7 @@ def criar_tabuleiro(x: list):
     i_local = 0
     for j in range(cols):
         for i in range(rows):
-            if i+1 == x[i_local]:
+            if i == x[i_local]:
                 temp_tab[i][j] = 1
         i_local += 1
     return temp_tab
@@ -93,8 +79,6 @@ def roleta(P):
 
 # RECOMBINAÇÃO (OK) 
 def recombinacao_dois_pontos(inds: np.ndarray, index, prob_recombinacao):
-    #nInds = inds.copy(order='F')
-
     xi1 = int(np.random.uniform(low=1, high=len(P[0]) - 2))
     xi2 = int(np.random.uniform(low=1, high=len(P[0]) - 2))
     
@@ -110,7 +94,7 @@ def recombinacao_dois_pontos(inds: np.ndarray, index, prob_recombinacao):
     #    return 
 
     #for i in range(0, inds.shape[0]-1, 2):
-    if (r_prob > prob_recombinacao):
+    if (r_prob < prob_recombinacao):
         i = index
         for j in range(inds.shape[1]):
             if mascara[j] == 1:
@@ -122,22 +106,55 @@ def gerar_mascara(xi1, xi2):
         masc[j] = 1
     return masc
 
-# MUTAÇÃO (  )
-def mutacao():
-    pass
+# MUTAÇÃO [uniforme] (OK)
+def mutacao(inds: np.ndarray, index):
+    for g in range(inds.shape[1]): # g as gene
+        Pm = np.random.uniform(0, 1)
+        if Pm <= 0.1:
+            inds[index][g] = int(np.random.uniform(low=0, high=8))
+            
+    
 # ==========================================================================================================
 # RESOLUÇÃO
 # ==========================================================================================================
-ind_otimos = roleta(P)
+melhor_aptidao = 0
+melhor_individuo = None
+geracao_atual = 0
 
-for i in range(0, ind_otimos.shape[0]-1, 2):
-    recombinacao_dois_pontos(ind_otimos, i, 0.85)
+print(f(np.array([3, 5, 7, 2, 0, 6, 4, 1])))
 
+while melhor_aptidao != 28 and geracao_atual < nMaxGeracoes:
+    ind_otimos = roleta(P)
+    prob_rec = 0.85
 
+    pass
 
-pass
-# ======================================================================================================
-selecionados = roleta(P)
+    for i in range(0, ind_otimos.shape[0]-1, 2):
+        recombinacao_dois_pontos(ind_otimos, i, prob_rec)
+
+    pass
+
+    for i in range(ind_otimos.shape[0]):
+        mutacao(ind_otimos, i)
+
+    # guardar o melhor indivíduo da população atual:
+    for i in range(1, ind_otimos.shape[0]):
+        temp = f(ind_otimos[i])
+        if (temp > melhor_aptidao):
+            melhor_aptidao = temp
+            melhor_individuo = ind_otimos[i]
+    
+    pass
+    # a nova população
+    P = ind_otimos
+
+    geracao_atual += 1
+    #pass
+
+print(melhor_individuo)
+print(criar_tabuleiro(melhor_individuo))
+print(melhor_aptidao)
+
 # ==========================================================================================================
 # MUTAÇÃO 
 # ==========================================================================================================
