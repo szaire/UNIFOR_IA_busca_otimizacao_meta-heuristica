@@ -10,15 +10,20 @@
 # ==========================================================================================================
 import numpy as np
 import matplotlib.pyplot as plt
+import time
+# ==========================================================================================================
+# TEMPO t0
+# ==========================================================================================================
+tempo = time.time()
 # ==========================================================================================================
 # DEFINIÇÕES INICIAIS
 # ==========================================================================================================
 # Número de pares
-n = 50
+n = 20
 # Definindo a população inicial aleatoriamente
 P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
 # Quantidade máxima de gerações
-nMaxGeracoes = 3000
+nMaxGeracoes = 10000
 # ==========================================================================================================
 # FUNÇÃO OBJETIVO - OBJETIVO: MAXIMIZAR F(X), OU SEJA, MINIMIZAR H
 # ==========================================================================================================
@@ -150,21 +155,21 @@ while quantidade_solucoes < 92:
         
         geracao_atual += 1
         #pass
-        if geracao_atual % 10 == 0:
+        if geracao_atual % 100 == 0:
             print(f'melhor aptidão {melhor_aptidao} da geração {geracao_atual}')
    
     if melhor_aptidao == 28:
         if (len(solucoes) == 0):
             solucoes.append(melhor_individuo)
             quantidade_solucoes += 1
+        tai = False # taí? = está aí?
         for ind in solucoes:
-            if not ind is melhor_individuo:
-                solucoes.append(melhor_individuo)
-                quantidade_solucoes += 1
-                break
+            if ind is melhor_individuo:
+               tai = True
+        if tai == False:
+            solucoes.append(melhor_individuo)
+            quantidade_solucoes += 1
     print('length:',len(solucoes),'//array:',solucoes)
 
-# ==========================================================================================================
-# MUTAÇÃO 
-# ==========================================================================================================
-
+tempo = time.time() - tempo
+print(tempo)
