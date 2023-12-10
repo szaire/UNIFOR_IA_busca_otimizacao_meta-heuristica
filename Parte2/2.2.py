@@ -35,10 +35,10 @@ def generate_points(N):
     # retorna um vetor com 4*N pontos
     return np.concatenate((x_partition,y_partition,z_partition,w_partition), axis=0)
 
-# 8 pontos por agrupamento, total de 32 pontos
-K = 30
+# 30 pontos por agrupamento, total de 120 pontos
+K = 32
 points = generate_points(K)
-I = np.random.permutation(K*4) #gera um vetor com 32 elementos aleatorios
+I = np.random.permutation(K*4) #gera um vetor com 120 elementos aleatorios
 inicial = I[0] #escolhe um ponto aleatorio para ser o ponto de origem
 p_origem = points[inicial,:].reshape(1,3) 
 points = np.delete(points,inicial,axis=0) #remove o ponto de origem da lista de pontos pois ele nao pode ser visitado novamente
@@ -150,16 +150,6 @@ while geracao_atual < geracoes_max:
                 ponto_1 = ponto_2
                 ponto_2 = aux
 
-            # sem numpy:
-            # aux_2 = direita do ponto_2 do pai_2 + esquerda do ponto_1 do pai_2 + meio do pai 2
-            # aux_2 = pai_2[ponto_2:n_points] + pai_2[0:ponto_1] + pai_2[ponto_1:ponto_2]
-
-            # aux_1 = direita do ponto_2 do pai_1 + esquerda do ponto_1 do pai_1 + meio do pai 1
-            # aux_1 = pai_1[ponto_2:n_points] + pai_1[0:ponto_1] + pai_1[ponto_1:ponto_2]
-
-            # filho_1 = [None] * n_points
-            # filho_2 = [None] * n_points
-
             # com numpy:
             aux_2 = np.concatenate(
                 (pai_2[ponto_2:n_points], pai_2[0:ponto_1], pai_2[ponto_1:ponto_2])
@@ -170,7 +160,6 @@ while geracao_atual < geracoes_max:
             filho_1 = [None] * n_points
             filho_2 = [None] * n_points
 
-            # coloca os meios
             for i in range(ponto_1, ponto_2):
                 filho_1[i] = pai_2[i]
                 filho_2[i] = pai_1[i]
@@ -178,7 +167,6 @@ while geracao_atual < geracoes_max:
             posAux_1 = 0
             posAux_2 = 0
 
-            # coloca o final
             for i in range(ponto_2, n_points):
                 while aux_1[posAux_1] in filho_1:
                     posAux_1 += 1
@@ -187,7 +175,6 @@ while geracao_atual < geracoes_max:
                     posAux_2 += 1
                 filho_2[i] = aux_2[posAux_2]
 
-            # coloca o inicio
             for i in range(0, ponto_1):
                 while aux_1[posAux_1] in filho_1:
                     posAux_1 += 1
@@ -196,7 +183,6 @@ while geracao_atual < geracoes_max:
                     posAux_2 += 1
                 filho_2[i] = aux_2[posAux_2]
 
-            # retorna cromossomo
             return [filho_1, filho_2]
 
         filhos = recombinacao_dois_pontos(pai_1, pai_2)
