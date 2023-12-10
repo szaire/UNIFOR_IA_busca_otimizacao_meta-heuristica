@@ -1,6 +1,11 @@
-list = [-1, 1, 2, 4]
+import numpy as np;
 
-group_list = [[0, 1, 2, 4], [2, 3, 6, 7], [0, 2, 5, 3]]
+list = []
+list.append(np.array([1,2,3,4]))
+list.append(np.array([5,1,7,9]))
+list.append(np.array([0,2,1,3]))
 
-if list in group_list:
-    print('baladinha top')
+arr = np.array([1,2,3,4])
+
+if np.array_equal(arr, list[0]):
+    print('asdfaf')

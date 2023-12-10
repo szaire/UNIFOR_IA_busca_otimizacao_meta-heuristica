@@ -110,8 +110,20 @@ def mutacao(inds: np.ndarray, index):
         Pm = np.random.uniform(0, 1)
         if Pm <= 0.1:
             inds[index][g] = int(np.random.uniform(low=0, high=8))
-            
-    
+# ==========================================================================================================
+# UTILS
+# ==========================================================================================================            
+def contains(individuo, solucoes):
+        for i in range(len(solucoes)):
+            cromossomoAtual = solucoes[i]
+            flag = True
+            for j in range(8):
+                if individuo[j] != cromossomoAtual[j]:
+                    flag = False
+                    break
+            if flag:
+                return True
+        return False
 # ==========================================================================================================
 # RESOLUÇÃO
 # ==========================================================================================================
@@ -126,7 +138,6 @@ while quantidade_solucoes < 92:
     geracao_atual = 0
     P = np.random.uniform(low=0, high=8, size=(n, 8)).astype(int)
 
-    
     while melhor_aptidao < 28 and geracao_atual < nMaxGeracoes:
         ind_otimos = roleta(P)
         prob_rec = 0.85
@@ -162,13 +173,10 @@ while quantidade_solucoes < 92:
         if (len(solucoes) == 0):
             solucoes.append(melhor_individuo)
             quantidade_solucoes += 1
-        tai = False # taí? = está aí?
-        for ind in solucoes:
-            if ind is melhor_individuo:
-               tai = True
-        if tai == False:
-            solucoes.append(melhor_individuo)
-            quantidade_solucoes += 1
+        else:
+            if not contains(melhor_individuo, solucoes):
+                solucoes.append(melhor_individuo)
+                quantidade_solucoes += 1
     print('length:',len(solucoes),'//array:',solucoes)
 
 tempo = time.time() - tempo
